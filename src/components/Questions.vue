@@ -5,9 +5,15 @@
         {{ currentQuestion.question }}
       </template>
       <hr class="my-4">
-      <p v-for="answer in answers" :key="answer">
+      <b-list-group>
+        <b-list-group-item
+        v-for="(answer, index) in answers" 
+        :key="index"
+        @click="selectAnswer(index)"
+        >
         {{ answer }}
-      </p>
+        </b-list-group-item>
+      </b-list-group>
       <b-button variant="primary" >Submit</b-button>
       <b-button @click="nextQuestion" variant="success" href="#">Next</b-button>
     </b-jumbotron>
@@ -20,13 +26,35 @@ export default {
     currentQuestion: Object,
     nextQuestion: Function
   },
+  data() {
+    return {
+      selectedIndex: null
+    }
+  },
   computed: {
     answers() {
-      
       let answers = [...this.currentQuestion.incorrect_answers]
       answers.push(this.currentQuestion.correct_answer)
       return answers
     }
+  },
+  methods: {
+    selectAnswer(i) {
+      this.selectedIndex = i
+    }
   }
 }
 </script>
+
+<style scoped>
+  .list-group {
+    margin: 1rem
+  }
+    .list-group-item:hover {
+    background: #EEE;
+    cursor: pointer
+  }
+  .btn {
+    margin: 1rem
+  }
+</style>
