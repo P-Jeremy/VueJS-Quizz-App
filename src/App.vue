@@ -1,28 +1,51 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Header/>
+    <b-container class="bv-example-row">
+      <b-row>
+        <b-col sm="8" offset="2">
+          <Questions 
+            v-if="questions.length"
+            :currentQuestion="questions[index]"
+            :nextQuestion="nextQuestion"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from './components/Header.vue'
+import Questions from './components/Questions.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Header,
+    Questions
+  },
+  data(){
+    return {
+      questions: [],
+      index: 0
+    }
+  },
+  methods: {
+    nextQuestion() {
+      this.index ++
+    }
+  },
+  mounted: function() {
+    fetch('https://opentdb.com/api.php?amount=5&category=29&difficulty=medium&type=multiple', {
+      method:'get'
+    })
+    .then((res) => res.json())
+    // eslint-disable-next-line no-console
+    .then((json) => {
+      this.questions = json.results
+    })
   }
+  
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
