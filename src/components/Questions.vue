@@ -5,8 +5,8 @@
         {{ currentQuestion.question }}
       </template>
       <hr class="my-4">
-      <p>
-        answers
+      <p v-for="answer in answers" :key="answer">
+        {{ answer }}
       </p>
       <b-button variant="primary" >Submit</b-button>
       <b-button @click="nextQuestion" variant="success" href="#">Next</b-button>
@@ -19,6 +19,14 @@ export default {
   props: {
     currentQuestion: Object,
     nextQuestion: Function
+  },
+  computed: {
+    answers() {
+      
+      let answers = [...this.currentQuestion.incorrect_answers]
+      answers.push(this.currentQuestion.correct_answer)
+      return answers
+    }
   }
 }
 </script>
