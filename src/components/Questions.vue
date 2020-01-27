@@ -10,6 +10,7 @@
         v-for="(answer, index) in answers" 
         :key="index"
         @click="selectAnswer(index)"
+        :class="[selectedIndex === index ? 'selected': '']"
         >
         {{ answer }}
         </b-list-group-item>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import shuffle from 'lodash.shuffle';
 export default {
   props: {
     currentQuestion: Object,
@@ -28,7 +30,8 @@ export default {
   },
   data() {
     return {
-      selectedIndex: null
+      selectedIndex: null,
+      shuffledAnswers: [],
     }
   },
   computed: {
@@ -38,23 +41,53 @@ export default {
       return answers
     }
   },
+  watch: {
+    currentQuestion() {
+      this.selectedIndex = null
+      this.shuffleAnswers()
+    }
+  },
   methods: {
     selectAnswer(i) {
       this.selectedIndex = i
+    },
+    shuffleAnswers() {
+      let answers = [...this.currentQuestion.incorrect_answers]
+      answers.push(this.currentQuestion.correct_answer)
+      this.shuffledAnswers = shuffle(answers)
+      // eslint-disable-next-line no-console
+      console.log("SHUFFLE", this.shuffledAnswers);
+      
     }
   }
 }
 </script>
 
 <style scoped>
+
   .list-group {
     margin: 1rem
   }
+
     .list-group-item:hover {
     background: #EEE;
     cursor: pointer
   }
+
   .btn {
     margin: 1rem
   }
+
+  .selected {
+    background-color: lightblue
+  }
+
+  .correct {
+    background-color: lightgreen
+  }
+
+    .incorrect {
+    background-color: lightcoral
+  }
+
 </style>
