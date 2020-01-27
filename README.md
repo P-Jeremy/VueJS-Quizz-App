@@ -1,6 +1,6 @@
 # Comics Quizz App
 
-This project is a test project to learn VueJs
+This project is a poc to learn VueJs
 
 ## Project setup
 ```
