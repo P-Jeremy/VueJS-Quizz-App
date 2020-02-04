@@ -2,22 +2,26 @@
   <div class="question_box">
     <b-jumbotron>
       <template v-slot:lead>
-        {{ currentQuestion.question }}
+        <span  v-html="currentQuestion.question"></span>
       </template>
       <hr class="my-4">
       <b-list-group>
         <b-list-group-item
         v-for="(answer, index) in shuffledAnswers" 
         :key="index"
-        @click="selectAnswer(index)"
-        :class="[selectedIndex === index ? 'selected': '']"
+        @click.prevent="selectAnswer(index)"
+        :class="[
+          !answered && selectedIndex === index ? 'selected':
+          answered && correctIndex === index ? 'correct' : ''
+          ]"
         >
-        {{ answer }}
+        <span v-html="answer"></span>
         </b-list-group-item>
       </b-list-group>
       <b-button 
         variant="primary"
         @click="submitAnswer"
+        :disabled="selectedIndex === null || answered"
       >
         Submit
       </b-button>
@@ -39,6 +43,7 @@ export default {
       selectedIndex: null,
       correctIndex: null,
       shuffledAnswers: [],
+      answered: false
     }
   },
   computed: {
@@ -57,6 +62,7 @@ export default {
       immediate: true,
       handler() {
         this.selectedIndex= null
+        this.answered = false
         this.shuffleAnswers()
       }
     }
@@ -76,6 +82,7 @@ export default {
       if (this.selectedIndex === this.correctIndex) {
         isCorrect = true
       }
+      this.answered = true
       this.increment(isCorrect)
     }
   }

@@ -54,7 +54,6 @@ export default {
       method:'get'
     })
     .then((res) => res.json())
-    // eslint-disable-next-line no-console
     .then((json) => {
       this.questions = json.results
     })
