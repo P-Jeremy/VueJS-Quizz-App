@@ -7,7 +7,7 @@
       <hr class="my-4">
       <b-list-group>
         <b-list-group-item
-        v-for="(answer, index) in answers" 
+        v-for="(answer, index) in shuffledAnswers" 
         :key="index"
         @click="selectAnswer(index)"
         :class="[selectedIndex === index ? 'selected': '']"
@@ -15,7 +15,12 @@
         {{ answer }}
         </b-list-group-item>
       </b-list-group>
-      <b-button variant="primary" >Submit</b-button>
+      <b-button 
+        variant="primary"
+        @click="submitAnswer"
+      >
+        Submit
+      </b-button>
       <b-button @click="nextQuestion" variant="success" href="#">Next</b-button>
     </b-jumbotron>
   </div>
@@ -26,11 +31,13 @@ import shuffle from 'lodash.shuffle';
 export default {
   props: {
     currentQuestion: Object,
-    nextQuestion: Function
+    nextQuestion: Function,
+    increment: Function
   },
   data() {
     return {
       selectedIndex: null,
+      correctIndex: null,
       shuffledAnswers: [],
     }
   },
@@ -42,9 +49,16 @@ export default {
     }
   },
   watch: {
-    currentQuestion() {
-      this.selectedIndex = null
-      this.shuffleAnswers()
+    // currentQuestion() {
+    //   this.selectedIndex = null
+    //   this.shuffleAnswers()
+    // }
+    currentQuestion: {
+      immediate: true,
+      handler() {
+        this.selectedIndex= null
+        this.shuffleAnswers()
+      }
     }
   },
   methods: {
@@ -55,9 +69,14 @@ export default {
       let answers = [...this.currentQuestion.incorrect_answers]
       answers.push(this.currentQuestion.correct_answer)
       this.shuffledAnswers = shuffle(answers)
-      // eslint-disable-next-line no-console
-      console.log("SHUFFLE", this.shuffledAnswers);
-      
+      this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer)
+    },
+    submitAnswer() {
+      let isCorrect = false
+      if (this.selectedIndex === this.correctIndex) {
+        isCorrect = true
+      }
+      this.increment(isCorrect)
     }
   }
 }
